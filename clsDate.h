@@ -26,7 +26,7 @@ public:
 	}
 	clsDate(string Date)
 	{
-		vector<string> vDate = clsString::SplitString(Date, "/");
+		vector<string> vDate = clsString::Split(Date, "/");
 		_Day = stoi(vDate[0]);
 		_Month = stoi(vDate[1]);
 		_Year = stoi(vDate[2]);

@@ -306,7 +306,7 @@ public:
 	}
 
 
-	static vector<string> SplitString(string text, string delim)
+	static vector<string> Split(string text, string delim)
 	{
 		vector <string> vString;
 		short pos = 0;
@@ -314,10 +314,7 @@ public:
 		while ((pos = text.find(delim)) != std::string::npos)
 		{
 			sWord = text.substr(0, pos);
-			if (sWord != "")
-			{
-				vString.push_back(sWord);
-			}
+			vString.push_back(sWord);
 			text.erase(0, pos + delim.length());
 		}
 		if (text != "")
@@ -329,9 +326,9 @@ public:
 
 	}
 
-	vector<string> SplitString(string delim)
+	vector<string> Split(string delim)
 	{
-		return SplitString(_Value, delim);
+		return Split(_Value, delim);
 	}
 
 	static string TrimLeft(string text)
@@ -408,7 +405,7 @@ public:
 	{
 
 		vector <string> vWords;
-		vWords = SplitString(text, " ");
+		vWords = Split(text, " ");
 		string text2 = "";
 		vector<string>::iterator iter = vWords.end();
 
@@ -446,7 +443,7 @@ public:
 
 	static string ReplaceWord(string S13, string StringToReplace, string sRepalceTo, bool MatchCase = true)
 	{
-		vector <string> vString = SplitString(S13, " ");
+		vector <string> vString = Split(S13, " ");
 		for (string& s : vString)
 		{
 			if (MatchCase)
