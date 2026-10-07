@@ -14,6 +14,7 @@ private:
 	string _AccountNumber;
 	string _PinCode;
 	float _AccountBalance;
+	bool _MarkedForDelete;
 
 	static clsBankClient _ConvertLinetoClientObject(string Line, string Seprator = "#//#")
 	{
@@ -61,8 +62,11 @@ private:
 		{
 			for (clsBankClient C : vClients)
 			{
-				string Line = _ConverClientObjectToLineData(C);
-				MyFile << Line << endl;
+				if (C._MarkedForDelete == false)
+				{
+					string Line = _ConverClientObjectToLineData(C);
+					MyFile << Line << endl;
+				}
 			}
 			MyFile.close();
 		}
@@ -105,6 +109,7 @@ public:
 		_AccountNumber = AccountNumber;
 		_PinCode = PinCode;
 		_AccountBalance = AccountBalance;
+		_MarkedForDelete = false;
 	}
 	
 	string AccountNumber()
@@ -132,6 +137,10 @@ public:
 	}
 	__declspec(property(get = GetAccountBalance, put = SetAccountBalance)) float AccountBalance;
 	
+	bool MarkedForDeleted()
+	{
+		return _MarkedForDelete;
+	}
 
 	void Print()
 	{
@@ -153,6 +162,7 @@ public:
 		return (_Mode == enMode::EmptyMode);
 	}
 	//-----------------------------------------------------------------------------
+	
 	//Find 
 	static clsBankClient Find(string AccountNumber)
 	{
@@ -235,9 +245,24 @@ public:
 		}
 	}
 
+	
 	//-----------------------------------------------------------------------------
-
-
+	
+	bool Delete()
+	{
+		vector<clsBankClient>_vClients = _LoadClientsDataFromFile();
+		for (clsBankClient& C : _vClients)
+		{
+			if (C.AccountNumber() == _AccountNumber)
+			{
+				C._MarkedForDelete = true;
+				break;
+			}
+		}
+		*this = _GetEmptyObject();
+		_SaveClientsDataToFile(_vClients);
+		return true;
+	}
 
 	//-----------------------------------------------------------------------------
 
@@ -248,13 +273,6 @@ public:
 
 	//-----------------------------------------------------------------------------
 
-
-
-	//-----------------------------------------------------------------------------
-
-
-
-	//-----------------------------------------------------------------------------
 
 };
 

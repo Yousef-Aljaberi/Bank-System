@@ -12,7 +12,7 @@ void ReadClientInfo(clsBankClient& Client)
 	cout << "Enter Email: \n";
 	Client.Email = clsInputValidate::ReadString();
 	cout << "Enter Phone Number: \n";
-	Client.Email = clsInputValidate::ReadString();
+	Client.AccountNumber() = clsInputValidate::ReadString();
 	cout << "Enter PinCode: \n";
 	Client.PinCode = clsInputValidate::ReadString();
 	cout << "Enter Account Balance: \n";
@@ -81,10 +81,38 @@ void AddNewClient()
 	}
 }
 
+void DeleteClient()
+{
+	cout << "Please Enter Account Number: ";
+	string AccountNumber = clsInputValidate::ReadString();
+	while (!clsBankClient::IsClientExist(AccountNumber))
+	{
+		cout << "\nAccount Number is Not Found, choose another one:  ";
+		AccountNumber = clsInputValidate::ReadString();
+	}
+
+	clsBankClient Client = clsBankClient::Find(AccountNumber);
+	Client.Print();
+	char answer;
+	cout << "Are you sure you want to delete this client? y/n?  ";
+	cin >> answer;
+	if (tolower(answer) == 'y')
+	{
+		if (Client.Delete())
+		{
+			cout << "\nClient Deleted Successfully :-)" << endl;
+			Client.Print();
+		}
+		else
+		{
+			cout << "\n Error Client Was not Deleted\n";
+		}
+	}
+	
+}
 int main()
 {
-	// UpdateClient();
-	AddNewClient();
 
+	DeleteClient();
 	
 }
