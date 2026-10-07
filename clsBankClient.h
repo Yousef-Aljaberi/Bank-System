@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 
-class clsBankClient:public clsPerson
+class clsBankClient :public clsPerson
 {
 private:
 	enum enMode { EmptyMode = 1, UpdateMode = 2 };
@@ -24,6 +24,63 @@ private:
 	{
 		return  clsBankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
 	}
+	vector<clsBankClient> _LoadClientsDataFromFile()
+	{
+		vector<clsBankClient> vClients;
+		fstream MyFile;
+		MyFile.open("Clients.txt", ios::in);
+		if (MyFile.is_open())
+		{
+			string Line;
+			while (getline(MyFile, Line))
+			{
+				clsBankClient Client = _ConvertLinetoClientObject(Line);
+				vClients.push_back(Client);
+			}
+			MyFile.close();
+		}
+		return vClients;
+	}
+	string _ConverClientObjectToLineData(clsBankClient Client, string Seprator = "#//#")
+	{
+		string stClientRecord = "";
+		stClientRecord = Client.FirstName + Seprator;
+		stClientRecord += Client.LastName + Seprator;
+		stClientRecord += Client.Email + Seprator;
+		stClientRecord += Client.Phone + Seprator;
+		stClientRecord += Client.AccountNumber() + Seprator;
+		stClientRecord += Client.PinCode + Seprator;
+		stClientRecord += to_string(Client.AccountBalance);
+		return stClientRecord;
+	}
+	void _SaveClientsDataToFile(vector<clsBankClient> vClients)
+	{
+		fstream MyFile;
+		MyFile.open("Clients.txt", ios::out);
+		if (MyFile.is_open())
+		{
+			for (clsBankClient C : vClients)
+			{
+				string Line = _ConverClientObjectToLineData(C);
+				MyFile << Line << endl;
+			}
+			MyFile.close();
+		}
+	}
+	void _Update()
+	{
+		vector<clsBankClient> vClients = _LoadClientsDataFromFile();
+		for (clsBankClient& C : vClients)
+		{
+			if (C.AccountNumber() == AccountNumber())
+			{
+				C = *this;
+				break;
+			}
+		}
+		_SaveClientsDataToFile(vClients);
+	}
+
 
 public:
 
@@ -81,7 +138,8 @@ public:
 	{
 		return (_Mode == enMode::EmptyMode);
 	}
-
+	//-----------------------------------------------------------------------------
+	//Find 
 	static clsBankClient Find(string AccountNumber)
 	{
 		fstream MyFile;
@@ -125,11 +183,48 @@ public:
 		return _GetEmptyObject();
 	}
 
+	//-----------------------------------------------------------------------------
 	static bool IsClientExist(string AccountNumber)
 	{
 		clsBankClient Client = clsBankClient::Find(AccountNumber);
 		return (!Client.IsEmpty());
 	}
+
+	//-----------------------------------------------------------------------------
+
+	static enum enSaveResults { enSaveFialdEmptyObject = 1, enObjectSavedSuccessed = 2 };
+	enSaveResults Save()
+	{
+		switch (_Mode)
+		{
+		case enMode::EmptyMode:
+			return enSaveResults::enSaveFialdEmptyObject;
+			break;
+		case enMode::UpdateMode:
+		{
+			_Update();
+			return enSaveResults::enObjectSavedSuccessed;
+		}
+		default:
+			return enSaveResults::enSaveFialdEmptyObject;
+		}
+	}
+	//-----------------------------------------------------------------------------
+
+
+	//-----------------------------------------------------------------------------
+
+
+
+	//-----------------------------------------------------------------------------
+
+
+
+	//-----------------------------------------------------------------------------
+
+
+
+	//-----------------------------------------------------------------------------
 
 };
 
