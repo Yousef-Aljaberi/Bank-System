@@ -9,7 +9,7 @@
 class clsBankClient :public clsPerson
 {
 private:
-	enum enMode { EmptyMode = 1, UpdateMode = 2 };
+	enum enMode { EmptyMode = 1, UpdateMode = 2, AddNewMode = 3 };
 	enMode _Mode;
 	string _AccountNumber;
 	string _PinCode;
@@ -79,6 +79,20 @@ private:
 			}
 		}
 		_SaveClientsDataToFile(vClients);
+	}
+	void _AddNewDataLineToFile(string Line)
+	{
+		fstream MyFile;
+		MyFile.open("Clients.txt", ios::out | ios::app);
+		if (MyFile.is_open())
+		{
+			MyFile << Line << endl;
+			MyFile.close();
+		}
+	}
+	void _AddNew()
+	{
+		_AddNewDataLineToFile(_ConverClientObjectToLineData(*this));
 	}
 
 
@@ -192,29 +206,45 @@ public:
 
 	//-----------------------------------------------------------------------------
 
-	static enum enSaveResults { enSaveFialdEmptyObject = 1, enObjectSavedSuccessed = 2 };
+	static enum enSaveResults { svSaveFialdEmptyObject = 1, svObjectSavedSuccessed = 2, svFaildAccountNumberExists = 3 };
 	enSaveResults Save()
 	{
 		switch (_Mode)
 		{
 		case enMode::EmptyMode:
-			return enSaveResults::enSaveFialdEmptyObject;
-			break;
+			if (IsEmpty())
+			{
+				return enSaveResults::svSaveFialdEmptyObject;
+			}
 		case enMode::UpdateMode:
 		{
 			_Update();
-			return enSaveResults::enObjectSavedSuccessed;
+			return enSaveResults::svObjectSavedSuccessed;
 		}
+
+		case enMode::AddNewMode:
+			if (clsBankClient::IsClientExist(_AccountNumber))
+			{
+				return enSaveResults::svFaildAccountNumberExists;
+			}
+			_AddNew();
+			_Mode = enMode::UpdateMode;
+			return svObjectSavedSuccessed;
 		default:
-			return enSaveResults::enSaveFialdEmptyObject;
+			return enSaveResults::svSaveFialdEmptyObject;
 		}
 	}
-	//-----------------------------------------------------------------------------
-
 
 	//-----------------------------------------------------------------------------
 
 
+
+	//-----------------------------------------------------------------------------
+
+	static clsBankClient GetAddNewClientObject(string AccountNumber)
+	{
+		return clsBankClient(AddNewMode, "", "", "", "", AccountNumber, "", 0);
+	}
 
 	//-----------------------------------------------------------------------------
 
