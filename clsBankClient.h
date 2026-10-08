@@ -25,7 +25,7 @@ private:
 	{
 		return  clsBankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
 	}
-	vector<clsBankClient> _LoadClientsDataFromFile()
+	static vector<clsBankClient> _LoadClientsDataFromFile()
 	{
 		vector<clsBankClient> vClients;
 		fstream MyFile;
@@ -161,7 +161,7 @@ public:
 	{
 		return (_Mode == enMode::EmptyMode);
 	}
-	//-----------------------------------------------------------------------------
+	
 	
 	//Find 
 	static clsBankClient Find(string AccountNumber)
@@ -207,14 +207,11 @@ public:
 		return _GetEmptyObject();
 	}
 
-	//-----------------------------------------------------------------------------
 	static bool IsClientExist(string AccountNumber)
 	{
 		clsBankClient Client = clsBankClient::Find(AccountNumber);
 		return (!Client.IsEmpty());
 	}
-
-	//-----------------------------------------------------------------------------
 
 	static enum enSaveResults { svSaveFialdEmptyObject = 1, svObjectSavedSuccessed = 2, svFaildAccountNumberExists = 3 };
 	enSaveResults Save()
@@ -245,9 +242,6 @@ public:
 		}
 	}
 
-	
-	//-----------------------------------------------------------------------------
-	
 	bool Delete()
 	{
 		vector<clsBankClient>_vClients = _LoadClientsDataFromFile();
@@ -264,14 +258,18 @@ public:
 		return true;
 	}
 
-	//-----------------------------------------------------------------------------
-
 	static clsBankClient GetAddNewClientObject(string AccountNumber)
 	{
 		return clsBankClient(AddNewMode, "", "", "", "", AccountNumber, "", 0);
 	}
 
-	//-----------------------------------------------------------------------------
+	//Clients List
+
+	static vector<clsBankClient> GetClientsList()
+	{
+		return _LoadClientsDataFromFile();
+	}
+
 
 
 };

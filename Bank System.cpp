@@ -1,6 +1,8 @@
 #include<iostream>
 #include"clsBankClient.h"
 #include"clsInputValidate.h"
+#include"clsUtil.h"
+#include<iomanip>
 using namespace std;
 
 void ReadClientInfo(clsBankClient& Client)
@@ -12,7 +14,7 @@ void ReadClientInfo(clsBankClient& Client)
 	cout << "Enter Email: \n";
 	Client.Email = clsInputValidate::ReadString();
 	cout << "Enter Phone Number: \n";
-	Client.AccountNumber() = clsInputValidate::ReadString();
+	Client.Phone = clsInputValidate::ReadString();
 	cout << "Enter PinCode: \n";
 	Client.PinCode = clsInputValidate::ReadString();
 	cout << "Enter Account Balance: \n";
@@ -81,6 +83,43 @@ void AddNewClient()
 	}
 }
 
+void PrintClientRecordLine(clsBankClient Client)
+{
+	cout << "| " << left << setw(15) << Client.AccountNumber();
+	cout << "| " << left << setw(20) << Client.FullName();
+	cout << "| " << left << setw(13) << Client.Phone;
+	cout << "| " << left << setw(20) << Client.Email;
+	cout << "| " << left << setw(10) << Client.PinCode;
+	cout << "| " << left << setw(12) << Client.AccountBalance;
+}
+void ShowClientsList()
+{
+	vector<clsBankClient>vClients = clsBankClient::GetClientsList();
+	cout << "\n" << clsUtil::Taps(5) << "Clients List (" << vClients.size() << ") Client(s)";
+	cout << "\n-----------------------------------------------------------------------";
+	cout << "-------------------------\n";
+	cout << "| " << left << setw(15) << "Accout Number";
+	cout << "| " << left << setw(20) << "Client Name";
+	cout << "| " << left << setw(13) << "Phone";
+	cout << "| " << left << setw(20) << "Email";
+	cout << "| " << left << setw(10) << "Pin Code";
+	cout << "| " << left << setw(12) << "Balance";
+	cout << "\n-----------------------------------------------------------------------";
+	cout << "-------------------------\n";
+	
+	if (vClients.size() == 0)
+		cout << clsUtil::Taps(3) << "No Clients Available In the System!";
+	else
+		for (clsBankClient Client : vClients) 
+		{
+			PrintClientRecordLine(Client);
+			cout << endl;
+		}
+		
+	
+
+}
+
 void DeleteClient()
 {
 	cout << "Please Enter Account Number: ";
@@ -112,7 +151,9 @@ void DeleteClient()
 }
 int main()
 {
-
-	DeleteClient();
-	
+	AddNewClient();
+	ShowClientsList();
+	cout << endl;
+	system("pause");
+	return 0;
 }
