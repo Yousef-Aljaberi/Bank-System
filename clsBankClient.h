@@ -264,11 +264,24 @@ public:
 	}
 
 	//Clients List
-
 	static vector<clsBankClient> GetClientsList()
 	{
 		return _LoadClientsDataFromFile();
 	}
+
+	//total balance
+	static float GetTotalBalance()
+	{
+		vector<clsBankClient>vClients= _LoadClientsDataFromFile();
+		float ToatlBalance = 0;
+		for (clsBankClient Client : vClients)
+		{
+			ToatlBalance += Client.AccountBalance;
+		}
+
+		return ToatlBalance;
+	}
+
 
 
 
