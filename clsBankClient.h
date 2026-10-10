@@ -142,21 +142,6 @@ public:
 		return _MarkedForDelete;
 	}
 
-	void Print()
-	{
-		cout << "\nClient Card:";
-		cout << "\n___________________";
-		cout << "\nFirstName   : " << FirstName;
-		cout << "\nLastName    : " << LastName;
-		cout << "\nFull Name   : " << FullName();
-		cout << "\nEmail       : " << Email;
-		cout << "\nPhone       : " << Phone;
-		cout << "\nAcc. Number : " << _AccountNumber;
-		cout << "\nPassword    : " << _PinCode;
-		cout << "\nBalance     : " << _AccountBalance;
-		cout << "\n___________________\n";
-
-	}
 	bool IsEmpty()
 	{
 		return (_Mode == enMode::EmptyMode);
@@ -213,7 +198,7 @@ public:
 		return (!Client.IsEmpty());
 	}
 
-	static enum enSaveResults { svSaveFialdEmptyObject = 1, svObjectSavedSuccessed = 2, svFaildAccountNumberExists = 3 };
+	static enum enSaveResults { svSaveFialdEmptyObject = 1, svSucceeded = 2, svFaildAccountNumberExists = 3 };
 	enSaveResults Save()
 	{
 		switch (_Mode)
@@ -226,7 +211,7 @@ public:
 		case enMode::UpdateMode:
 		{
 			_Update();
-			return enSaveResults::svObjectSavedSuccessed;
+			return enSaveResults::svSucceeded;
 		}
 
 		case enMode::AddNewMode:
@@ -236,7 +221,7 @@ public:
 			}
 			_AddNew();
 			_Mode = enMode::UpdateMode;
-			return svObjectSavedSuccessed;
+			return svSucceeded;
 		default:
 			return enSaveResults::svSaveFialdEmptyObject;
 		}
